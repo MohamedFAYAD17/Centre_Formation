@@ -1,0 +1,167 @@
+mysql> use centre_de_formation;
+Database changed
+mysql> show tables ;
++-------------------------------+
+| Tables_in_centre_de_formation |
++-------------------------------+
+| catalogue                     |
+| etudiant                      |
+| formation                     |
+| inscription                   |
+| session                       |
+| specialite                    |
++-------------------------------+
+6 rows in set (0.06 sec)
+
+mysql> select count(*) from etudiant ;
++----------+
+| count(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.22 sec)
+
+mysql> select count from etudiant ;
+ERROR 1054 (42S22): Unknown column 'count' in 'field list'
+mysql> select count(*) from etudiant as Nomnres_etudiants;
++----------+
+| count(*) |
++----------+
+|        7 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) as Nombres_etudiants from etudiant;
++-------------------+
+| Nombres_etudiants |
++-------------------+
+|                 7 |
++-------------------+
+1 row in set (0.07 sec)
+
+
+mysql> select numCINEtu, datediff(CURDATE(), datenaissance)/365 from centre_de_formation.etudiant;
++-----------+----------------------------------------+
+| numCINEtu | datediff(CURDATE(), datenaissance)/365 |
++-----------+----------------------------------------+
+| AB234567  |                                37.2000 |
+| C0987265  |                                25.8685 |
+| D2356903  |                                27.8548 |
+| F9827363  |                                27.1699 |
+| G5346789  |                                24.0000 |
+| J3578902  |                                33.7205 |
+| Y1234987  |                                44.2849 |
++-----------+----------------------------------------+
+7 rows in set (0.01 sec)
+
+mysql> select numCINEtu, datediff(CURDATE(), datenaissance)/365.25 from centre_de_formation.etudiant;
++-----------+-------------------------------------------+
+| numCINEtu | datediff(CURDATE(), datenaissance)/365.25 |
++-----------+-------------------------------------------+
+| AB234567  |                                   37.1745 |
+| C0987265  |                                   25.8508 |
+| D2356903  |                                   27.8357 |
+| F9827363  |                                   27.1513 |
+| G5346789  |                                   23.9836 |
+| J3578902  |                                   33.6975 |
+| Y1234987  |                                   44.2546 |
++-----------+-------------------------------------------+
+7 rows in set (0.00 sec)
+
+mysql> select numCINEtu, timestampdiff(YEAR, datenaissance, now()) as age from centre_de_formation.etudiant;
++-----------+------+
+| numCINEtu | age  |
++-----------+------+
+| AB234567  |   37 |
+| C0987265  |   25 |
+| D2356903  |   27 |
+| F9827363  |   27 |
+| G5346789  |   23 |
+| J3578902  |   33 |
+| Y1234987  |   44 |
++-----------+------+
+7 rows in set (0.00 sec)
+
+mysql> select codeForm, titreForm, Max(prixForm) from centre_de_formation.formation;
++----------+--------------------+---------------+
+| codeForm | titreForm          | Max(prixForm) |
++----------+--------------------+---------------+
+|       11 | développement Java |          6000 |
++----------+--------------------+---------------+
+1 row in set (0.12 sec)
+
+mysql> select codeForm, titreForm, Min(prixForm) from centre_de_formation.formation;
++----------+--------------------+---------------+
+| codeForm | titreForm          | Min(prixForm) |
++----------+--------------------+---------------+
+|       11 | développement Java |          2500 |
++----------+--------------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> select SUM(prixForm) from centre_de_formation.formation;
++---------------+
+| SUM(prixForm) |
++---------------+
+|         23050 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> select codeSess, count(numCINEtu) from centre_de_formation.inscription
+    ->  group by codeSess;
++----------+------------------+
+| codeSess | count(numCINEtu) |
++----------+------------------+
+|     1101 |                7 |
+|     1201 |                6 |
+|     1302 |                5 |
+|     1401 |                6 |
+|     1501 |                7 |
++----------+------------------+
+5 rows in set (0.04 sec)
+
+mysql> select distinct numCINEtu from centre_de_formation.inscription;
++-----------+
+| numCINEtu |
++-----------+
+| AB234567  |
+| G5346789  |
+| C0987265  |
+| D2356903  |
+| Y1234987  |
+| J3578902  |
+| F9827363  |
++-----------+
+7 rows in set (0.00 sec)
+
+mysql> select numCINEtu, count(codeSess) from centre_de_formation.inscription
+    -> group by numCINEtu;
++-----------+-----------------+
+| numCINEtu | count(codeSess) |
++-----------+-----------------+
+| AB234567  |               4 |
+| G5346789  |               5 |
+| C0987265  |               5 |
+| D2356903  |               5 |
+| Y1234987  |               5 |
+| J3578902  |               4 |
+| F9827363  |               3 |
++-----------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> select codeSess, typeCours, count(numinscription) from inscription
+    -> group by codeSess, typeCours;
++----------+------------+-----------------------+
+| codeSess | typeCours  | count(numinscription) |
++----------+------------+-----------------------+
+|     1101 | Distanciel |                     7 |
+|     1201 | Présentiel |                     5 |
+|     1201 | Distanciel |                     1 |
+|     1302 | Présentiel |                     4 |
+|     1302 | Distanciel |                     1 |
+|     1401 | Distanciel |                     6 |
+|     1501 | Distanciel |                     3 |
+|     1501 | Présentiel |                     4 |
++----------+------------+-----------------------+
+8 rows in set (0.00 sec)
+
+mysql>
